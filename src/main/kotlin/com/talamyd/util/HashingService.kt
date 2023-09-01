@@ -1,4 +1,4 @@
-package com.talamyd.security
+package com.talamyd.util
 
 import io.ktor.util.*
 import javax.crypto.Mac
@@ -8,7 +8,7 @@ private val ALGORITHM = System.getenv("hash.algorithm")
 private val HASH_KEY = System.getenv("hash.secret").toByteArray()
 private val hMacKey = SecretKeySpec(HASH_KEY, ALGORITHM)
 
-fun hashPassword(password: String): String{
+fun hashPassword(password: String): String {
     val hMac = Mac.getInstance(ALGORITHM)
     hMac.init(hMacKey)
 

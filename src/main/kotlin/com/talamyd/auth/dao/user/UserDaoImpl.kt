@@ -1,8 +1,10 @@
-package com.talamyd.dao.user
+package com.talamyd.auth.dao.user
 
-import com.talamyd.dao.DatabaseFactory.dbQuery
-import com.talamyd.model.*
-import com.talamyd.security.hashPassword
+import com.talamyd.auth.model.SignUpParams
+import com.talamyd.auth.model.User
+import com.talamyd.auth.model.UserRow
+import com.talamyd.database.DatabaseFactory.dbQuery
+import com.talamyd.util.hashPassword
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -25,7 +27,7 @@ class UserDaoImpl : UserDao {
     override suspend fun findByEmail(email: String): User? {
         return dbQuery {
             UserRow.select { UserRow.email eq email }
-                .map { rowToUser(it) }
+                .map { it.toUser() }
                 .singleOrNull()
         }
     }
@@ -40,7 +42,7 @@ class UserDaoImpl : UserDao {
         )
     }
 
-    fun ResultRow.toUser() = User(
+    private fun ResultRow.toUser() = User(
         this[UserRow.id],
         this[UserRow.name],
         this[UserRow.bio],

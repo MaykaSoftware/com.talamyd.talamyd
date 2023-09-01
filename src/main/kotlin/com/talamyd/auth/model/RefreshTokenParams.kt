@@ -1,4 +1,4 @@
-package com.talamyd.model
+package com.talamyd.auth.model
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
@@ -15,7 +15,7 @@ object RefreshTokenRow : Table(name = "refresh_tokens") {
 @Serializable
 data class RefreshTokenParams(val refreshToken: String)
 
-data class RefreshTokenFromDB(val email: String, val refreshToken: String, val expiresAt: Long)
+data class RefreshTokenDB(val email: String, val refreshToken: String, val expiresAt: Long)
 
 @Serializable
 data class TokenPairResponse(

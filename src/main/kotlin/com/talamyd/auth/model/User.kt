@@ -1,8 +1,8 @@
-package com.talamyd.model
+package com.talamyd.auth.model
 
 import org.jetbrains.exposed.sql.Table
 
-object UserRow: Table(name = "users") {
+object UserRow : Table(name = "users") {
     val id = integer(name = "user_id").autoIncrement()
     val name = varchar(name = "user_name", length = 250)
     val email = varchar(name = "user_email", length = 250)
