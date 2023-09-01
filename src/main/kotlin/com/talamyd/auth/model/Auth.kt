@@ -1,4 +1,4 @@
-package com.talamyd.model
+package com.talamyd.auth.model
 
 import kotlinx.serialization.Serializable
 
@@ -23,7 +23,7 @@ data class AuthResponse(
 
 @Serializable
 data class AuthResponseData(
-    val id : Int,
+    val id: Int,
     val name: String,
     val bio: String,
     val avatar: String? = null,

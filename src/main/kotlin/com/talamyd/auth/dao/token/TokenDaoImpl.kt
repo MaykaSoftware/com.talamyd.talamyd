@@ -1,12 +1,15 @@
-package com.talamyd.dao.token
+package com.talamyd.auth.dao.token
 
-import com.talamyd.dao.DatabaseFactory.dbQuery
-import com.talamyd.model.*
+import com.talamyd.auth.model.RefreshTokenDB
+import com.talamyd.auth.model.RefreshTokenRow
+import com.talamyd.database.DatabaseFactory.dbQuery
 import dev.forst.exposed.insertOrUpdate
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
-class TokenDaoImpl: TokenDao {
-    override suspend fun insert(params: RefreshTokenFromDB) {
+class TokenDaoImpl : TokenDao {
+    override suspend fun insert(params: RefreshTokenDB) {
         return dbQuery {
             val insertStatement = RefreshTokenRow.insertOrUpdate(RefreshTokenRow.email) {
                 it[email] = params.email
@@ -14,20 +17,17 @@ class TokenDaoImpl: TokenDao {
                 it[expires_at] = params.expiresAt
             }
 
-            insertStatement.resultedValues?.singleOrNull()?.let {
-                rowToToken(it)
-            }
+            insertStatement.resultedValues?.singleOrNull()?.toToken()
         }
     }
 
-    override suspend fun getToken(oldRefreshToken: String): RefreshTokenFromDB? {
+    override suspend fun getToken(oldRefreshToken: String): RefreshTokenDB? {
         return dbQuery {
             RefreshTokenRow.select { RefreshTokenRow.refresh_token eq oldRefreshToken }
-                .map { rowToToken(it) }
+                .map { it.toToken() }
                 .singleOrNull()
         }
     }
-
 
     override suspend fun update(newToken: String, oldRefreshToken: String, currentTime: Long) {
         return dbQuery {
@@ -38,16 +38,7 @@ class TokenDaoImpl: TokenDao {
         }
     }
 
-
-    private fun rowToToken(row: ResultRow): RefreshTokenFromDB {
-        return RefreshTokenFromDB(
-            email = row[RefreshTokenRow.email],
-            refreshToken = row[RefreshTokenRow.refresh_token],
-            expiresAt = row[RefreshTokenRow.expires_at],
-        )
-    }
-
-    fun ResultRow.toToken() = RefreshTokenFromDB(
+    private fun ResultRow.toToken() = RefreshTokenDB(
         this[RefreshTokenRow.email],
         this[RefreshTokenRow.refresh_token],
         this[RefreshTokenRow.expires_at],

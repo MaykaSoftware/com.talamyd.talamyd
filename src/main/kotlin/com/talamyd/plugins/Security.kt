@@ -1,14 +1,14 @@
 package com.talamyd.plugins
 
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.talamyd.model.AuthResponse
-import com.talamyd.model.RefreshTokenData
-import com.talamyd.model.TokenPair
+import com.talamyd.auth.model.AuthResponse
+import com.talamyd.auth.model.RefreshTokenData
+import com.talamyd.auth.model.TokenPair
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import java.time.Duration
 import java.util.*
@@ -26,22 +26,20 @@ private val jwtRefreshLifetime = System.getenv("jwt.refresh.lifetime").toLong()
 fun Long.withOffset(offset: Duration) = this + offset.toMillis()
 
 fun Application.configureSecurity() {
-    
-    // Please read the jwt property from the config file if you are using EngineMain
 
     authentication {
         jwt {
             verifier(
-                JWT
-                    .require(Algorithm.HMAC256(jwtSecret))
+                JWT.require(Algorithm.HMAC256(jwtSecret))
                     .withAudience(jwtAudience)
                     .withIssuer(jwtIssuer)
                     .build()
             )
+
             validate { credential ->
-                if (credential.payload.getClaim(CLAIM).asString() != null){
+                if (credential.payload.getClaim(CLAIM).asString() != null) {
                     JWTPrincipal(payload = credential.payload)
-                }else{
+                } else {
                     null
                 }
             }
@@ -60,7 +58,7 @@ fun Application.configureSecurity() {
 
 fun generateToken(email: String, isUpdate: Boolean = false): TokenPair {
     val currentTime = System.currentTimeMillis()
-    val jwt =  JWT.create()
+    val jwt = JWT.create()
         .withAudience(jwtAudience)
         .withIssuer(jwtIssuer)
         .withClaim(CLAIM, email)
