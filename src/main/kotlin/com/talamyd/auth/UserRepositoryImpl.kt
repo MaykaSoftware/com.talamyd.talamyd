@@ -1,13 +1,12 @@
-package com.talamyd.repository.user
+package com.talamyd.auth
 
-import com.talamyd.dao.token.TokenDao
-import com.talamyd.dao.user.UserDao
-import com.talamyd.model.*
+import com.talamyd.auth.dao.token.TokenDao
+import com.talamyd.auth.dao.user.UserDao
+import com.talamyd.auth.model.*
 import com.talamyd.plugins.generateToken
-import com.talamyd.security.hashPassword
+import com.talamyd.util.hashPassword
 import com.talamyd.util.Response
 import io.ktor.http.*
-
 
 class UserRepositoryImpl(
     private val userDao: UserDao, private val tokenDao: TokenDao
@@ -31,7 +30,7 @@ class UserRepositoryImpl(
                 )
             } else {
                 val generatedTokens = generateToken(params.email)
-                val refreshTokenObject = RefreshTokenFromDB(
+                val refreshTokenObject = RefreshTokenDB(
                     params.email,
                     generatedTokens.refreshTokenData.refreshToken,
                     generatedTokens.refreshTokenData.expiresAt
@@ -65,7 +64,7 @@ class UserRepositoryImpl(
 
             if (user.password == hashedPassword) {
                 val generatedToken = generateToken(params.email)
-                val refreshTokenObject = RefreshTokenFromDB(
+                val refreshTokenObject = RefreshTokenDB(
                     params.email,
                     generatedToken.refreshTokenData.refreshToken,
                     generatedToken.refreshTokenData.expiresAt

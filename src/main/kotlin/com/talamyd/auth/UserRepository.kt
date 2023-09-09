@@ -1,9 +1,9 @@
-package com.talamyd.repository.user
+package com.talamyd.auth
 
-import com.talamyd.model.AuthResponse
-import com.talamyd.model.SignInParams
-import com.talamyd.model.SignUpParams
-import com.talamyd.model.TokenPairResponse
+import com.talamyd.auth.model.AuthResponse
+import com.talamyd.auth.model.SignInParams
+import com.talamyd.auth.model.SignUpParams
+import com.talamyd.auth.model.TokenPairResponse
 import com.talamyd.util.Response
 
 interface UserRepository {

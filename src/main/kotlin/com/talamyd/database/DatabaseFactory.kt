@@ -1,7 +1,7 @@
-package com.talamyd.dao
+package com.talamyd.database
 
-import com.talamyd.model.RefreshTokenRow
-import com.talamyd.model.UserRow
+import com.talamyd.auth.model.RefreshTokenRow
+import com.talamyd.auth.model.UserRow
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
